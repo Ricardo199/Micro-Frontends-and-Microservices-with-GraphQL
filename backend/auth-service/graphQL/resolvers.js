@@ -14,7 +14,7 @@ export const resolvers = {
         },
     },
     Mutation: {
-        register: async (_, { username, email, password, role }, { User, JWT_SECRET }) => {
+        signup: async (_, { username, email, password, role }, { User, JWT_SECRET }) => {
             const existingUser = await User.findOne({ email });
             if (existingUser) throw new Error('Email already in use');
 
