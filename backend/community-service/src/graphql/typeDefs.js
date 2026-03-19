@@ -35,7 +35,6 @@ export const typeDefs = gql`
         post(_id: ID!): Post
         helpRequest(_id: ID!): HelpRequest
         helpRequests(isResolved: Boolean): [HelpRequest!]!
-        updateHelpRequest(_id: ID!, description: String, location: String, isResolved: Boolean): HelpRequest
     }
 
     type Mutation {
@@ -45,4 +44,5 @@ export const typeDefs = gql`
         createHelpRequest(description: String!, location: String): HelpRequest!
         resolveHelpRequest(_id: ID!): HelpRequest!
         volunteerForHelpRequest(_id: ID!): HelpRequest!
+        updateHelpRequest(_id: ID!, description: String, location: String, isResolved: Boolean): HelpRequest!
     }`;
