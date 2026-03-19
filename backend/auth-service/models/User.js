@@ -23,7 +23,28 @@ userSchema.methods.generateAuthToken = function (secret) {
     const refreshToken = require('jsonwebtoken').sign(payload, secret, { expiresIn: '7d' });
     this.refreshToken = refreshToken;
     
-    return accessToken;
+    return { accessToken, refreshToken };
+};
+
+userSchema.methods.verifyAuthToken = function (token, secret) {
+    if(this.refreshToken !== token) return false;
+    try {
+        require('jsonwebtoken').verify(token, secret);
+        return true;
+    } catch (err) {
+        return false;
+    }
+};
+
+userSchema.methods.refreshToken = function (secret) {
+    if (!this.refreshToken) throw new Error('No refresh token available');
+    try {
+        const payload = require('jsonwebtoken').verify(this.refreshToken, secret);
+        const newAccessToken = require('jsonwebtoken').sign(payload, secret, { expiresIn: '15m' });
+        return { accessToken: newAccessToken, refreshToken: this.refreshToken, user: payload };
+    } catch (err) {
+        throw new Error('Invalid refresh token');
+    }
 };
 
 userSchema.methods.comparePassword = function (candidatePassword) {

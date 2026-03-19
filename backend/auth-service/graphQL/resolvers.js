@@ -19,8 +19,9 @@ export const resolvers = {
             const user = new User({ username, email, password, role });
             await user.save();
 
-            const token = user.generateAuthToken(JWT_SECRET);
-            return { token, user };
+            const {accessToken, refreshToken} = user.generateAuthToken(JWT_SECRET);
+            await user.save();
+            return { accessToken, refreshToken, user };
         },
         login: async (_, { email, password }, { User, JWT_SECRET }) => {
             const user = await User.findOne({ email });
@@ -29,8 +30,9 @@ export const resolvers = {
             const isMatch = await user.comparePassword(password);
             if (!isMatch) throw new Error('Invalid credentials');
 
-            const token = user.generateAuthToken(JWT_SECRET);
-            return { token, user };
+            const {accessToken, refreshToken} = user.generateAuthToken(JWT_SECRET);
+            await user.save();
+            return { accessToken, refreshToken, user };
         },
         updateUser: async (_, { _id, username, email, password, role }, { User }) => {
             const user = await User.findById(_id);
@@ -52,5 +54,12 @@ export const resolvers = {
             if (!user) throw new Error('Not authenticated');
             return true;
         },
+        refreshToken: async (_, { refreshToken }, { User, JWT_SECRET }) => {
+            const user = await User.findOne({ refreshToken });
+            if (!user) throw new Error('Invalid refresh token');
+
+            const { accessToken } = user.refreshToken(JWT_SECRET);
+            return { accessToken, refreshToken, user };
+        }
     },
 };

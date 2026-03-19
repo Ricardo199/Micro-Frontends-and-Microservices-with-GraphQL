@@ -8,10 +8,12 @@ type User {
     email: String!
     role: String!
     createdAt: String!
+    refreshToken: String
 }
 
 type AuthPayload {
-    token: String!
+    accessToken: String!
+    refreshToken: String!
     user: User!
 }
 
@@ -27,5 +29,6 @@ type Mutation {
     logout: Boolean!
     updateUser(_id: ID!, username: String, email: String, password: String, role: String): User!
     deleteUser(_id: ID!): Boolean!
+    refreshToken(refreshToken: String!): AuthPayload!
 }
 `;
