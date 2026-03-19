@@ -4,7 +4,7 @@ export const typeDefs = gql`
 
 type User {
     id: ID!
-    name: String!
+    username: String!
     email: String!
     role: String!
     createdAt: String!
@@ -17,14 +17,14 @@ type AuthPayload {
 
 type Query {
     me: User
-    getUser(id: ID!): User
+    getUser(_id: ID!): User
     getAllUsers: [User!]!
 }
 
 type Mutation {
-    register(name: String!, email: String!, password: String!, role: String!): AuthPayload!
+    register(username: String!, email: String!, password: String!, role: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
-    updateUser(id: ID!, name: String, email: String, password: String, role: String): User!
-    deleteUser(id: ID!): Boolean!
+    updateUser(_id: ID!, username: String, email: String, password: String, role: String): User!
+    deleteUser(_id: ID!): Boolean!
 }
 `;

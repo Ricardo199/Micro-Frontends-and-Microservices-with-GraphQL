@@ -4,7 +4,7 @@ export const resolvers = {
             if (!user) throw new Error('Not authenticated');
             return user;
         },
-        getUser: async (_, { id }, { User }) => {
+        getUser: async (_, { _id }, { User }) => {
             return await User.findById(id);
         },
         getAllUsers: async (_, __, { User }) => {
@@ -12,11 +12,11 @@ export const resolvers = {
         },
     },
     Mutation: {
-        register: async (_, { name, email, password, role }, { User, JWT_SECRET }) => {
+        register: async (_, { username, email, password, role }, { User, JWT_SECRET }) => {
             const existingUser = await User.findOne({ email });
             if (existingUser) throw new Error('Email already in use');
 
-            const user = new User({ name, email, password, role });
+            const user = new User({ username, email, password, role });
             await user.save();
 
             const token = user.generateAuthToken(JWT_SECRET);
@@ -32,11 +32,11 @@ export const resolvers = {
             const token = user.generateAuthToken(JWT_SECRET);
             return { token, user };
         },
-        updateUser: async (_, { id, name, email, password, role }, { User }) => {
-            const user = await User.findById(id);
+        updateUser: async (_, { _id, username, email, password, role }, { User }) => {
+            const user = await User.findById(_id);
             if (!user) throw new Error('User not found');
 
-            if (name) user.name = name;
+            if (username) user.username = username;
             if (email) user.email = email;
             if (password) user.password = password;
             if (role) user.role = role;
@@ -44,8 +44,8 @@ export const resolvers = {
             await user.save();
             return user;
         },
-        deleteUser: async (_, { id }, { User }) => {
-            const result = await User.deleteOne({ _id: id });
+        deleteUser: async (_, { _id }, { User }) => {
+            const result = await User.deleteOne({ _id });
             return result.deletedCount > 0;
         },
     },

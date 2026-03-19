@@ -39,9 +39,9 @@ export const typeDefs = gql`
 
     type Mutation {
         createPost(title: String!, content: String!, category: String!): Post!
-        updatePost(id: ID!, title: String, content: String, category: String): Post!
-        deletePost(id: ID!): Boolean!
+        updatePost(_id: ID!, title: String, content: String, category: String): Post!
+        deletePost(_id: ID!): Boolean!
         createHelpRequest(description: String!, location: String): HelpRequest!
-        resolveHelpRequest(id: ID!): HelpRequest!
-        volunteerForHelpRequest(id: ID!): HelpRequest!
+        resolveHelpRequest(_id: ID!): HelpRequest!
+        volunteerForHelpRequest(_id: ID!): HelpRequest!
     }`;
