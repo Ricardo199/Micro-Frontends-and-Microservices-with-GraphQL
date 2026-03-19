@@ -1,3 +1,5 @@
+import User from "../models/User";
+
 export const resolvers = {
     Query: {
         me: async (_, __, { user }) => {
@@ -52,6 +54,7 @@ export const resolvers = {
         },
         logout: async (_, __, { user }) => {
             if (!user) throw new Error('Not authenticated');
+            await User.updateOne({ _id: user._id }, { $set: { refreshToken: null } });
             return true;
         },
         refreshToken: async (_, { refreshToken }, { User, JWT_SECRET }) => {
