@@ -1,13 +1,32 @@
 import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
-type Post {
-    author: User!
-    title: String!
-    content: String!
-    category: String!
-    aiSummary: String
-    createdAt: String!
-    updatedAt: String!
-}
+    type User {
+        _id: ID!
+        name: String!
+        email: String!
+    }
+
+    type Post {
+        _id: ID!
+        author: User!
+        title: String!
+        content: String!
+        category: String!
+        aiSummary: String
+        createdAt: String!
+        updatedAt: String!
+    }
+
+    type Query {
+        me: User
+        posts(category: String): [Post!]!
+        post(id: ID!): Post
+    }
+
+    type Mutation {
+        createPost(title: String!, content: String!, category: String!): Post!
+        updatePost(id: ID!, title: String, content: String, category: String): Post!
+        deletePost(id: ID!): Boolean!
+    }
 `;
