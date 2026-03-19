@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const helpRequestSchema = new mongoose.Schema({
     author: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
@@ -10,4 +10,4 @@ const helpRequestSchema = new mongoose.Schema({
     updatedAt: {type: Date},
 });
 
-module.exports = mongoose.model("HelpRequest", helpRequestSchema);
+export default mongoose.model("HelpRequest", helpRequestSchema);

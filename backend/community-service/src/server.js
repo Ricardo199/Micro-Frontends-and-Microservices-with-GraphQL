@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { typeDefs } from './graphql/typeDefs.js';
 import { resolvers } from './graphql/resolvers.js';
 import Post from './models/Post.js';
+import HelpRequest from './models/HelpRequest.js';
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -42,6 +43,7 @@ const startServer = async () => {
             const user = getUser(token);
             return {
                 Post,
+                HelpRequest,
                 user,
                 JWT_SECRET,
             };
