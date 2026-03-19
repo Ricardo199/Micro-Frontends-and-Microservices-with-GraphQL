@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     password: {type: String, required: true, default: ""},
     role: {type: String, enum: ['resident', 'business_owner', 'community_organizer']},
     createdAt: {type: Date, default: Date.now},
+    refreshToken: {type: String, default: null},
 }, {timestamps: true});
 
 userSchema.pre("save", async function (next) {
@@ -16,8 +17,13 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.generateAuthToken = function (secret) {
-    const payload = { id: this._id, email: this.email, role: this.role };
-    return require("jsonwebtoken").sign(payload, secret, { expiresIn: "1h" });
+    const payload = { _id: this._id, username: this.username, email: this.email, role: this.role };
+    const accessToken = require('jsonwebtoken').sign(payload, secret, { expiresIn: '15m' });
+    
+    const refreshToken = require('jsonwebtoken').sign(payload, secret, { expiresIn: '7d' });
+    this.refreshToken = refreshToken;
+    
+    return accessToken;
 };
 
 userSchema.methods.comparePassword = function (candidatePassword) {

@@ -5,7 +5,7 @@ export const resolvers = {
             return user;
         },
         getUser: async (_, { _id }, { User }) => {
-            return await User.findById(id);
+            return await User.findById(_id);
         },
         getAllUsers: async (_, __, { User }) => {
             return await User.find();
@@ -47,6 +47,10 @@ export const resolvers = {
         deleteUser: async (_, { _id }, { User }) => {
             const result = await User.deleteOne({ _id });
             return result.deletedCount > 0;
+        },
+        logout: async (_, __, { user }) => {
+            if (!user) throw new Error('Not authenticated');
+            return true;
         },
     },
 };

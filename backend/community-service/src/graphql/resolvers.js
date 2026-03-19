@@ -6,17 +6,17 @@ export const resolvers = {
         },
         posts: async (_, {category}, { Post }) => {
             const filter = category ? { category } : {};
-            return await Post.find(filter).populate('author', 'name');
+            return await Post.find(filter).populate('author', 'username');
         },
         post: async (_, { _id }, { Post }) => {
-            return await Post.findById(_id).populate('author', 'name');
+            return await Post.findById(_id).populate('author', 'username');
         },
         helpRequests: async (_, { isResolved }, { HelpRequest }) => {
             const filter = isResolved !== undefined ? { isResolved } : {};
-            return await HelpRequest.find(filter).populate('author', 'name').populate('volunteers', 'name');
+            return await HelpRequest.find(filter).populate('author', 'username').populate('volunteers', 'username');
         },
         helpRequest: async (_, { _id }, { HelpRequest }) => {
-            return await HelpRequest.findById(_id).populate('author', 'name').populate('volunteers', 'name');
+            return await HelpRequest.findById(_id).populate('author', 'username').populate('volunteers', 'username');
         },
     },
     Mutation: {

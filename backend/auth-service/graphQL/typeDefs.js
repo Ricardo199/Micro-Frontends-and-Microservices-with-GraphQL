@@ -24,6 +24,7 @@ type Query {
 type Mutation {
     register(username: String!, email: String!, password: String!, role: String!): AuthPayload!
     login(email: String!, password: String!): AuthPayload!
+    logout: Boolean!
     updateUser(_id: ID!, username: String, email: String, password: String, role: String): User!
     deleteUser(_id: ID!): Boolean!
 }
