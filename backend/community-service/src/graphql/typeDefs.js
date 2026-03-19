@@ -32,9 +32,9 @@ export const typeDefs = gql`
     type Query {
         me: User
         posts(category: String): [Post!]!
-        post(id: ID!): Post
+        post(_id: ID!): Post
         helpRequests(isResolved: Boolean): [HelpRequest!]!
-        helpRequest(id: ID!): HelpRequest
+        helpRequest(_id: ID!): HelpRequest
     }
 
     type Mutation {
