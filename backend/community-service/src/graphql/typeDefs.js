@@ -41,6 +41,7 @@ export const typeDefs = gql`
         createPost(title: String!, content: String!, category: String!): Post!
         updatePost(_id: ID!, title: String, content: String, category: String): Post!
         deletePost(_id: ID!): Boolean!
+        helprequests(isResolved: Boolean): [HelpRequest!]!
         createHelpRequest(description: String!, location: String): HelpRequest!
         resolveHelpRequest(_id: ID!): HelpRequest!
         volunteerForHelpRequest(_id: ID!): HelpRequest!
