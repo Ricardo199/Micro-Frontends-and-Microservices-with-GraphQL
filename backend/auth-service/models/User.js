@@ -15,6 +15,11 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+userSchema.methods.generateAuthToken = function (secret) {
+    const payload = { id: this._id, email: this.email, role: this.role };
+    return require("jsonwebtoken").sign(payload, secret, { expiresIn: "1h" });
+};
+
 userSchema.methods.comparePassword = function (candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
