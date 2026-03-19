@@ -18,15 +18,30 @@ export const typeDefs = gql`
         updatedAt: String!
     }
 
+    type HelpRequest {
+        _id: ID!
+        author: User!
+        description: String!
+        location: String
+        isResolved: Boolean!
+        volunteers: [User!]!
+        createdAt: String!
+        updatedAt: String
+    }
+
     type Query {
         me: User
         posts(category: String): [Post!]!
         post(id: ID!): Post
+        helpRequests(isResolved: Boolean): [HelpRequest!]!
+        helpRequest(id: ID!): HelpRequest
     }
 
     type Mutation {
         createPost(title: String!, content: String!, category: String!): Post!
         updatePost(id: ID!, title: String, content: String, category: String): Post!
         deletePost(id: ID!): Boolean!
-    }
-`;
+        createHelpRequest(description: String!, location: String): HelpRequest!
+        resolveHelpRequest(id: ID!): HelpRequest!
+        volunteerForHelpRequest(id: ID!): HelpRequest!
+    }`;
