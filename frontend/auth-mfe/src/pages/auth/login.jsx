@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { LOGIN_MUTATION } from '../../graphQL/operations';
 import "../../styles/login.css";
 
 export default function LoginForm() {
@@ -9,22 +7,6 @@ export default function LoginForm() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const [login, { loading }] = useMutation(LOGIN_MUTATION, {
-        onCompleted: (data) => {
-            const { accessToken, refreshToken, user } = data.login;
-            
-            // Store authentication data
-            localStorage.setItem("token", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("userInfo", JSON.stringify(user));
-            alert('Login successful!');
-            navigate("/home");
-        },
-        onError: (error) => {
-            alert(error.graphQLErrors?.[0]?.message || 'Login failed');
-        }
-    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,12 +21,20 @@ export default function LoginForm() {
             return alert("Password is required");
         }
 
-        login({
-            variables: {
-                email,
-                password
-            }
-        });
+        // Sample user data for demonstration
+        const mockUser = {
+            _id: '1',
+            username: 'john_doe',
+            email: email,
+            role: 'resident'
+        };
+
+        // Store authentication data
+        localStorage.setItem("token", "mock-token");
+        localStorage.setItem("refreshToken", "mock-refresh-token");
+        localStorage.setItem("userInfo", JSON.stringify(mockUser));
+        alert('Login successful!');
+        navigate("/home");
     };
 
     const handleSignUp = () => {

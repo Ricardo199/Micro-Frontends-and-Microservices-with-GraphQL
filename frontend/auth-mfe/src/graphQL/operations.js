@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client';
 
-// Authentication Operations
+/* Authentication Operations
+Comment out until backend gets solved
+
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {
     login(email: $email, password: $password) {
@@ -189,3 +191,5 @@ export const VOLUNTEER_FOR_HELP_REQUEST_MUTATION = gql`
     }
   }
 `;
+
+*/
