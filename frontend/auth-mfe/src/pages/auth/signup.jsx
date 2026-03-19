@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../../styles/signup.css"; 
+import { useMutation } from '@apollo/client';
+import { REGISTER_MUTATION } from '../../graphQL/operations';
+import "../../styles/signup.css";
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -9,6 +11,22 @@ export default function SignUpForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('resident');
+
+    const [signup, { loading }] = useMutation(REGISTER_MUTATION, {
+        onCompleted: (data) => {
+            const { accessToken, refreshToken, user } = data.signup;
+            
+            // Store authentication data
+            localStorage.setItem("token", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("userInfo", JSON.stringify(user));
+            alert('Signup successful!');
+            navigate("/login");
+        },
+        onError: (error) => {
+            alert(error.graphQLErrors?.[0]?.message || 'Signup failed');
+        }
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,36 +45,14 @@ export default function SignUpForm() {
             return alert("Password is required");
         }
 
-        try {
-            // TODO: Connect to GraphQL mutation
-            // Below is fake temp backend calls
-            const response = await fetch(
-                'http://localhost:5000/api/users/signup',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username,
-                        email,
-                        password,
-                        role,
-                    }),
-                }
-            );
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.message || 'Signup failed');
-                return;
+        signup({
+            variables: {
+                username,
+                email,
+                password,
+                role
             }
-            alert('Signup successful!');
-            navigate("/login");
-        } catch(error) {
-            console.error(error);
-            alert('Server error');
-        }
+        });
     };
 
     const handleLogin = () => {

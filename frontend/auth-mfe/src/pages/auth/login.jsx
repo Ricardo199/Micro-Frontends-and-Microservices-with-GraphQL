@@ -1,12 +1,30 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../../styles/login.css"; 
+import { useMutation } from '@apollo/client';
+import { LOGIN_MUTATION } from '../../graphQL/operations';
+import "../../styles/login.css";
 
 export default function LoginForm() {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+        onCompleted: (data) => {
+            const { accessToken, refreshToken, user } = data.login;
+            
+            // Store authentication data
+            localStorage.setItem("token", accessToken);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("userInfo", JSON.stringify(user));
+            alert('Login successful!');
+            navigate("/home");
+        },
+        onError: (error) => {
+            alert(error.graphQLErrors?.[0]?.message || 'Login failed');
+        }
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,44 +39,22 @@ export default function LoginForm() {
             return alert("Password is required");
         }
 
-        try {
-            // TODO: Connect to GraphQL mutation
-            // Below is fake temp backend calls
-            const response = await fetch(
-                'http://localhost:5000/api/users/login',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email,
-                        password,
-                    }),
-                }
-            );
-            const data = await response.json();
-
-            if (!response.ok) {
-                alert(data.message || 'Login failed');
-                return;
+        login({
+            variables: {
+                email,
+                password
             }
-            
-            // Store authentication data
-            localStorage.setItem("token", data.accessToken);
-            localStorage.setItem("refreshToken", data.refreshToken);
-            localStorage.setItem("userInfo", JSON.stringify(data.user));
-            alert('Login successful!');
-            navigate("/home");
-        } catch(error) {
-            console.error(error);
-            alert('Server error');
-        }
+        });
     };
 
     const handleSignUp = () => {
         navigate('/signup');
     };
+
+    // Remove this later
+    const bypass = () => {
+        navigate("/home");
+    }
 
     return (
         <div>
@@ -83,6 +79,7 @@ export default function LoginForm() {
                     <button onClick={handleSubmit}>Login</button>
                     <button onClick={handleSignUp}>Sign Up Instead</button>
                 </div>
+                    <button onClick={bypass}>bypass</button>
             </div>
         </div>
     )
