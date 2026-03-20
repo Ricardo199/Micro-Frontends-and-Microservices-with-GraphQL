@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_POSTS_QUERY, GET_HELP_REQUESTS_QUERY } from '../../graphQL/operations';
+import { communityApolloClient } from '../../services/apolloClient.js';
 import "../../styles/home.css";
 
 export default function Home() {
@@ -14,11 +15,14 @@ export default function Home() {
     });
 
     // Fetch posts from backend
-    const { data: postsData, loading: postsLoading, error: postsError } = useQuery(GET_POSTS_QUERY);
+    const { data: postsData, loading: postsLoading, error: postsError } = useQuery(GET_POSTS_QUERY, {
+        client: communityApolloClient
+    });
     const posts = postsData?.posts || [];
 
     // Fetch help requests from backend
     const { data: helpData, loading: helpLoading, error: helpError } = useQuery(GET_HELP_REQUESTS_QUERY, {
+        client: communityApolloClient,
         variables: { isResolved: false }
     });
     const helpRequests = helpData?.helpRequests || [];
@@ -35,6 +39,10 @@ export default function Home() {
         navigate("/news");
     };
 
+    const handleViewHelp = () => {
+        navigate("/help");
+    };
+    
     const handleViewProfile = () => {
         navigate("/profile");
     };
@@ -55,27 +63,12 @@ export default function Home() {
             <div className="welcome-section">
                 <div className="welcome-content">
                     <h1>Welcome back, {user.username}!</h1>
-                    <p className="welcome-subtitle">
-                        {user.role === 'resident' && "Connect with your neighbors and stay informed about community events."}
-                        {user.role === 'business_owner' && "Engage with the community and promote your business."}
-                        {user.role === 'community_organizer' && "Manage community initiatives and support your neighbors."}
-                    </p>
-                    
-                    <div className="user-stats">
-                        <div className="stat-card">
-                            <span className="stat-number">{posts.length}</span>
-                            <span className="stat-label">Community Posts</span>
-                        </div>
-
-                        <div className="stat-card">
-                            <span className="stat-number">{helpRequests.length}</span>
-                            <span className="stat-label">Active Help Requests</span>
-                        </div>
-                        
-                        <div className="stat-card">
-                            <span className="stat-number">Today</span>
-                            <span className="stat-label">Last Visit</span>
-                        </div>
+                    <div className="margin">
+                        <p className="welcome-subtitle">
+                            {user.role === 'resident' && "Connect with your neighbors and stay informed about community events."}
+                            {user.role === 'business_owner' && "Engage with the community and promote your business."}
+                            {user.role === 'community_organizer' && "Manage community initiatives and support your neighbors."}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -98,68 +91,15 @@ export default function Home() {
                         <p>Explore posts and discussions</p>
                     </button>
 
+                    <button className="action-card" onClick={handleViewHelp}>
+                        <h3>View Help</h3>
+                        <p>Aid other users questions and concerns</p>
+                    </button>
+
                     <button className="action-card" onClick={handleViewProfile}>
                         <h3>My Profile</h3>
                         <p>Manage your account and settings</p>
                     </button>
-                </div>
-            </div>
-
-            <div className="recent-activity">
-                <h2>Recent Activity</h2>
-                <div className="activity-grid">
-
-                    <div className="activity-section">
-                        <h3>Latest Community Posts</h3>
-                        <div className="posts-list">
-
-                            {posts.map((post) => (
-                                <div key={post._id} className="post-card" onClick={() => navigate(`/post/${post._id}`)}>
-                                    <div className="post-header">
-                                        <span className={`category-badge ${post.category}`}>
-                                            {post.category.toUpperCase()}
-                                        </span>
-                                        <span className="post-date">{formatDate(post.createdAt)}</span>
-                                    </div>
-                                    <h4 className="post-title">{post.title}</h4>
-                                    <p className="post-author">By {post.author.username}</p>
-                                    {post.aiSummary && (
-                                        <p className="post-summary">{post.aiSummary}</p>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="activity-section">
-                        <h3>Help Requests Needing Volunteers</h3>
-                        <div className="help-list">
-
-                            {helpRequests.map((help) => (
-                                <div key={help._id} className="help-card">
-                                    <div className="help-header">
-                                        <span className="help-author">By {help.author.username}</span>
-                                        <span className="help-date">{formatDate(help.createdAt)}</span>
-                                    </div>
-
-                                    <h4 className="help-title">Help Needed</h4>
-                                    <p className="help-description">{help.description}</p>
-                                    {help.location && (
-                                        <div className="help-location">
-                                            <span>{help.location}</span>
-                                        </div>
-                                    )}
-
-                                    <div className="help-actions">
-                                        <button className="volunteer-btn">Volunteer</button>
-                                        <span className="volunteers-count">
-                                            {help.volunteers.length} volunteers
-                                        </span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { CREATE_POST_MUTATION } from '../../../graphQL/operations';
+import { communityApolloClient } from '../../../services/apolloClient.js';
 import "../../../styles/home.css";
 
 export default function CreatePost() {
@@ -15,6 +16,7 @@ export default function CreatePost() {
     const [success, setSuccess] = useState('');
 
     const [createPost, { loading }] = useMutation(CREATE_POST_MUTATION, {
+        client: communityApolloClient,
         onCompleted: (data) => {
             setSuccess('Post created successfully!');
             setTimeout(() => {
@@ -85,43 +87,20 @@ export default function CreatePost() {
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="title">Title *</label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleChange}
-                            placeholder="Enter post title"
-                            required
-                        />
+                        <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Enter post title" required />
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="category">Category</label>
-                        <select
-                            id="category"
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                        >
+                        <select id="category" name="category" value={formData.category} onChange={handleChange} >
                             <option value="news">News</option>
-                            <option value="announcement">Announcement</option>
-                            <option value="event">Event</option>
-                            <option value="business">Business</option>
+                            <option value="discussion">Discussion</option>
                         </select>
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="content">Content *</label>
-                        <textarea
-                            id="content"
-                            name="content"
-                            value={formData.content}
-                            onChange={handleChange}
-                            placeholder="Enter post content"
-                            rows="8"
-                            required
-                        />
+                        <textarea id="content" name="content" value={formData.content} onChange={handleChange} placeholder="Enter post content" rows="8" required />
                     </div>
 
                     <div className="form-actions">

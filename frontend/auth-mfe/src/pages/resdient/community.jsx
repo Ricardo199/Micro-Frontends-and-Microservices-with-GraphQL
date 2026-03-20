@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_POSTS_QUERY, GET_POST_QUERY, CREATE_POST_MUTATION } from '../../graphQL/operations';
+import { GET_POSTS_QUERY, GET_POST_QUERY, CREATE_POST_MUTATION } from '../../graphQL/operations.js';
 import { communityApolloClient } from '../../services/apolloClient.js';
 import "../../styles/home.css";
 
@@ -9,7 +9,6 @@ export default function NewsPage() {
     const navigate = useNavigate();
     const { postId } = useParams();
     
-    // Get user data from localStorage
     const [user] = useState(() => {
         const savedUser = localStorage.getItem("userInfo");
         return savedUser ? JSON.parse(savedUser) : {
@@ -20,17 +19,14 @@ export default function NewsPage() {
         };
     });
 
-    // GraphQL queries
+    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
+
     const { loading, error, data, refetch } = useQuery(GET_POSTS_QUERY, {
         variables: { category: selectedCategory === 'all' ? undefined : selectedCategory },
         client: communityApolloClient
     });
 
-    // State for filtering and search
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [searchTerm, setSearchTerm] = useState('');
-
-    // Filter posts based on search term
     const filteredPosts = data?.posts?.filter(post => {
         const searchMatch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,7 +55,11 @@ export default function NewsPage() {
         navigate("/news");
     };
 
-    // Viewing specific post
+    const handleHome = () => {
+        navigate("/home");
+    };
+
+    // View Specific Post
     if (postId) {
         const { loading: postLoading, error: postError, data: postData } = useQuery(GET_POST_QUERY, {
             variables: { _id: postId },
@@ -172,7 +172,12 @@ export default function NewsPage() {
                 </div>
                 <div className="loading-spinner">
                     <div className="spinner"></div>
-                    <span>Loading news posts...</span>
+                    <span>Loading post...</span>
+                </div>
+                <div className="news-actions">
+                    <button className="secondary-btn" onClick={handleHome}>
+                        Back to Home
+                    </button>
                 </div>
             </div>
         );
@@ -225,16 +230,8 @@ export default function NewsPage() {
                         News
                     </button>
                     
-                    <button className={`filter-btn ${selectedCategory === 'announcement' ? 'active' : ''}`} onClick={() => setSelectedCategory('announcement')} >
-                        Announcements
-                    </button>
-
-                    <button className={`filter-btn ${selectedCategory === 'event' ? 'active' : ''}`} onClick={() => setSelectedCategory('event')} > 
-                        Events
-                    </button>
-
-                    <button className={`filter-btn ${selectedCategory === 'business' ? 'active' : ''}`} onClick={() => setSelectedCategory('business')} >
-                        Business
+                    <button className={`filter-btn ${selectedCategory === 'discussion' ? 'active' : ''}`} onClick={() => setSelectedCategory('discussion')} >
+                        Discussion
                     </button>
                 </div>
             </div>
@@ -270,12 +267,6 @@ export default function NewsPage() {
                 ) : (
                     <div className="empty-state">
                         <h3>No News Found</h3>
-                        <p>
-                            {searchTerm ? 
-                                `No posts found matching "${searchTerm}". Try adjusting your search terms.` :
-                                `No posts in the ${selectedCategory} category. Try selecting a different category.`
-                            }
-                        </p>
                         {(searchTerm || selectedCategory !== 'all') && (
                             <button onClick={() => { setSearchTerm(''); setSelectedCategory('all'); }} className="clear-filters-btn">
                                 Clear Filters
@@ -283,6 +274,11 @@ export default function NewsPage() {
                         )}
                     </div>
                 )}
+            </div>
+            <div className="news-actions">
+                <button className="secondary-btn" onClick={handleHome}>
+                    Back to Home
+                </button>
             </div>
         </div>
     );
