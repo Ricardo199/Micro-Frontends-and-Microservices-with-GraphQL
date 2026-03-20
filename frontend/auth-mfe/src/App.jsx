@@ -3,7 +3,7 @@ import './App.css'
 import LoginForm from './pages/auth/login'
 import SignUpForm from './pages/auth/signup'
 import Home from './pages/resdient/home'
-import News from './pages/resdient/news'
+import NewsPage from './pages/resdient/newsPage'
 import Discussion from './pages/resdient/discussion'
 import HelpPage from './pages/resdient/help'
 import CreateHelp from './pages/resdient/forms/createHelp'
@@ -22,8 +22,8 @@ function App() {
             <Route path="/signup" element={<SignUpForm />} />
 
             <Route path="/home" element={<Home />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/news/:postId" element={<News />} />
+            <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/:postId" element={<NewsPage />} />
             <Route path="/dis" element={<Discussion />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/profile" element={<Profile />} />

@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { LOGIN_MUTATION } from '../../graphQL/operations';
+import { authApolloClient } from '../../services/apolloClient.js';
 import "../../styles/login.css";
 
 export default function LoginForm() {
     const navigate = useNavigate();
+    const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
+        client: authApolloClient
+    });
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -21,20 +27,21 @@ export default function LoginForm() {
             return alert("Password is required");
         }
 
-        // Sample user data for demonstration
-        const mockUser = {
-            _id: '1',
-            username: 'john_doe',
-            email: email,
-            role: 'resident'
-        };
+        try {
+            const { data } = await login({
+                variables: { email, password }
+            });
 
-        // Store authentication data
-        localStorage.setItem("token", "mock-token");
-        localStorage.setItem("refreshToken", "mock-refresh-token");
-        localStorage.setItem("userInfo", JSON.stringify(mockUser));
-        alert('Login successful!');
-        navigate("/home");
+            // Store authentication data
+            localStorage.setItem("authToken", data.login.accessToken);
+            localStorage.setItem("refreshToken", data.login.refreshToken);
+            localStorage.setItem("userInfo", JSON.stringify(data.login.user));
+            alert('Login successful!');
+            navigate("/home");
+        } catch (err) {
+            console.error('Login error:', err);
+            alert('Login failed. Please check your credentials.');
+        }
     };
 
     const handleSignUp = () => {
@@ -52,7 +59,7 @@ export default function LoginForm() {
                 <h1>Login</h1>
             </div>
 
-            <div className="login-wrapper">
+            <div className="login-wrapper" login-wrapper="true">
                 <div className="login-form">
                     <div className="form-group">
                         <label>Email</label>

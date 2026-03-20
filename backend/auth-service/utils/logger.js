@@ -5,9 +5,9 @@ const logger = {
         console.log(JSON.stringify({
             timestamp: logger.getTimestamp(),
             level: success ? 'INFO' : 'ERROR',
-            service,
-            action: `MUTATION_${mutation.toUpperCase()}`,
-            userId,
+            service: 'auth-service',
+            action: `MUTATION_${action.toUpperCase()}`,
+            email,
             success,
             error: error ? error.message : null,
         }));

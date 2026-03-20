@@ -20,7 +20,10 @@ export const resolvers = {
                 const existingUser = await User.findOne({ email });
                 if (existingUser) throw new Error('Email already in use');
 
-                const user = new User({ username, email, password, role });
+                const bcrypt = await import('bcryptjs');
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                const user = new User({ username, email, password: hashedPassword, role });
                 await user.save();
 
                 const {accessToken, refreshToken} = user.generateAuthToken(JWT_SECRET);
@@ -29,7 +32,7 @@ export const resolvers = {
                 return { accessToken, refreshToken, user };
             }catch(err){
                 logger.logAuth('signup', email, false, err.message);
-                throw new Error(err);
+                throw err;
             }
         },
         login: async (_, { email, password }, { User, JWT_SECRET }) => {
@@ -45,7 +48,8 @@ export const resolvers = {
                 logger.logAuth('login', email, true);
                 return { accessToken, refreshToken, user };
             }catch(err){ 
-                logger.logAuth('login', email, false, err.message); throw new Error(err); 
+                logger.logAuth('login', email, false, err.message);
+                throw err;
             }
         },
         updateUser: async (_, { _id, username, email, password, role }, { User }) => {

@@ -1,70 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_POSTS_QUERY, GET_HELP_REQUESTS_QUERY } from '../../graphQL/operations';
 import "../../styles/home.css";
 
 export default function Home() {
     const navigate = useNavigate();
     
-    // Sample user data
-    const [user] = useState({
-        _id: '1',
-        username: 'john_doe',
-        email: 'john@example.com',
-        role: 'resident'
+    // Get user data from localStorage
+    const [user] = useState(() => {
+        const savedUser = localStorage.getItem("userInfo");
+        return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    // Sample post data
-    const [posts] = useState([
-        {
-            _id: '1',
-            title: 'Community Garden Opening This Weekend',
-            content: 'The new community garden will be opening this Saturday at 10 AM. Everyone is welcome to attend!',
-            category: 'news',
-            aiSummary: 'Local community garden opening event this weekend',
-            createdAt: '2024-01-15T10:30:00Z',
-            author: { username: 'community_organizer' }
-        },
-        {
-            _id: '2',
-            title: 'Discussion: Neighborhood Safety',
-            content: 'Let\'s discuss ways to improve safety in our neighborhood. What ideas do you have?',
-            category: 'discussion',
-            aiSummary: 'Community discussion about neighborhood safety improvements',
-            createdAt: '2024-01-14T15:45:00Z',
-            author: { username: 'neighbor_jane' }
-        },
-        {
-            _id: '3',
-            title: 'Local Business Spotlight: Main Street Cafe',
-            content: 'Check out the new menu items at Main Street Cafe! They\'re offering special discounts for residents.',
-            category: 'news',
-            aiSummary: 'Local cafe introduces new menu with resident discounts',
-            createdAt: '2024-01-13T09:20:00Z',
-            author: { username: 'business_owner' }
-        }
-    ]);
+    // Fetch posts from backend
+    const { data: postsData, loading: postsLoading, error: postsError } = useQuery(GET_POSTS_QUERY);
+    const posts = postsData?.posts || [];
 
-    // Sample help request data
-    const [helpRequests] = useState([
-        {
-            _id: '1',
-            description: 'Need help shoveling snow from driveway',
-            location: '123 Maple Street',
-            isResolved: false,
-            createdAt: '2024-01-15T08:00:00Z',
-            author: { username: 'elderly_resident' },
-            volunteers: [{ username: 'helpful_neighbor' }]
-        },
-        {
-            _id: '2',
-            description: 'Looking for volunteers to help at food bank this Saturday',
-            location: 'Community Center',
-            isResolved: false,
-            createdAt: '2024-01-14T12:00:00Z',
-            author: { username: 'community_organizer' },
-            volunteers: []
-        }
-    ]);
+    // Fetch help requests from backend
+    const { data: helpData, loading: helpLoading, error: helpError } = useQuery(GET_HELP_REQUESTS_QUERY, {
+        variables: { isResolved: false }
+    });
+    const helpRequests = helpData?.helpRequests || [];
 
     const handleCreatePost = () => {
         navigate("/create-post");

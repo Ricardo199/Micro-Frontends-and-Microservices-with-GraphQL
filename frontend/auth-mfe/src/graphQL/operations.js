@@ -1,7 +1,5 @@
-import { gql } from '@apollo/client';
-
-/* Authentication Operations
-Comment out until backend gets solved
+// Authentication Operations
+import gql from 'graphql-tag';
 
 export const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $password: String!) {
@@ -18,7 +16,7 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
-export const REGISTER_MUTATION = gql`
+export const SIGNUP_MUTATION = gql`
   mutation Signup($username: String!, $email: String!, $password: String!, $role: String!) {
     signup(username: $username, email: $email, password: $password, role: $role) {
       accessToken
@@ -191,5 +189,3 @@ export const VOLUNTEER_FOR_HELP_REQUEST_MUTATION = gql`
     }
   }
 `;
-
-*/
