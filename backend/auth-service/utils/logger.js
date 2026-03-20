@@ -1,4 +1,4 @@
-const logger ={
+const logger = {
     getTimestamp: () => new Date().toISOString(),
     
     logAuth: (action, email, success, error = null) => {
@@ -60,4 +60,4 @@ const logger ={
     }
 };
 
-module.exports = logger;
+export default logger;

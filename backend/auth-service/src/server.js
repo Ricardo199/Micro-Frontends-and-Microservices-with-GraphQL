@@ -1,5 +1,7 @@
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { typeDefs } from '../graphQL/typeDefs.js';
@@ -8,8 +10,6 @@ import User from '../models/User.js';
 
 const app = express();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-app.use(express.json());
 
 // Middleware to extract JWT from headers
 const getUser = (token) => {
@@ -37,24 +37,31 @@ const startServer = async () => {
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        context: ({ req }) => {
-            const token = req.headers.authorization?.replace('Bearer ', '');
-            const user = getUser(token);
-            return {
-                User,
-                user,
-                JWT_SECRET,
-            };
-        },
     });
 
     await server.start();
-    server.applyMiddleware({ app });
+    
+    app.use(cors());
+    app.use(express.json());
+    app.use(
+        '/graphql',
+        expressMiddleware(server, {
+            context: async ({ req }) => {
+                const token = req.headers.authorization?.replace('Bearer ', '');
+                const user = getUser(token);
+                return {
+                    User,
+                    user,
+                    JWT_SECRET,
+                };
+            },
+        })
+    );
 
     const PORT = process.env.PORT || 4001;
     app.listen(PORT, () => {
         console.log(`Auth Service running on port ${PORT}`);
-        console.log(`GraphQL endpoint: http://localhost:${PORT}${server.graphqlPath}`);
+        console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
     });
 };
 

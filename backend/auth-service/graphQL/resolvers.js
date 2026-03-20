@@ -1,5 +1,5 @@
-import User from "../models/User";
-import logger from "../utils/logger";
+import User from "../models/User.js";
+import logger from "../utils/logger.js";
 
 export const resolvers = {
     Query: {
@@ -92,7 +92,7 @@ export const resolvers = {
                 const user = await User.findOne({ refreshToken });
                 if (!user) throw new Error('Invalid refresh token');
 
-                const { accessToken } = user.refreshToken(JWT_SECRET);
+                const { accessToken } = user.generateNewAccessToken(JWT_SECRET);
                 logger.logRefreshToken('auth-service', 'refreshToken', user._id, true);
                 return { accessToken, refreshToken, user };
             }catch(err){
