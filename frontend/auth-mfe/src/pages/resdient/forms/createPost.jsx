@@ -18,12 +18,26 @@ export default function CreatePost() {
     const [createPost, { loading }] = useMutation(CREATE_POST_MUTATION, {
         client: communityApolloClient,
         onCompleted: (data) => {
+            console.log('CreatePost Success:', data);
             setSuccess('Post created successfully!');
             setTimeout(() => {
                 navigate('/news');
             }, 2000);
         },
         onError: (error) => {
+            console.error('CreatePost Error:', {
+                message: error.message,
+                networkError: error.networkError,
+                graphQLErrors: error.graphQLErrors,
+                timestamp: new Date().toISOString(),
+                component: 'CreatePost',
+                action: 'CREATE_POST_MUTATION',
+                variables: {
+                    title: formData.title,
+                    content: formData.content,
+                    category: formData.category
+                }
+            });
             setError(error.message);
         }
     });

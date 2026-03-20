@@ -8,19 +8,16 @@ import "../../styles/home.css";
 export default function Home() {
     const navigate = useNavigate();
     
-    // Get user data from localStorage
     const [user] = useState(() => {
         const savedUser = localStorage.getItem("userInfo");
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    // Fetch posts from backend
     const { data: postsData, loading: postsLoading, error: postsError } = useQuery(GET_POSTS_QUERY, {
         client: communityApolloClient
     });
     const posts = postsData?.posts || [];
 
-    // Fetch help requests from backend
     const { data: helpData, loading: helpLoading, error: helpError } = useQuery(GET_HELP_REQUESTS_QUERY, {
         client: communityApolloClient,
         variables: { isResolved: false }

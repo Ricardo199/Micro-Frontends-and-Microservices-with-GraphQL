@@ -63,7 +63,8 @@ export default function NewsPage() {
     if (postId) {
         const { loading: postLoading, error: postError, data: postData } = useQuery(GET_POST_QUERY, {
             variables: { _id: postId },
-            client: communityApolloClient
+            client: communityApolloClient,
+            skip: !postId
         });
 
         if (postLoading) {
@@ -184,6 +185,16 @@ export default function NewsPage() {
     }
 
     if (error) {
+        console.error('NewsPage Error:', {
+            message: error.message,
+            networkError: error.networkError,
+            graphQLErrors: error.graphQLErrors,
+            timestamp: new Date().toISOString(),
+            component: 'NewsPage',
+            action: 'GET_POSTS_QUERY',
+            variables: { category: selectedCategory === 'all' ? undefined : selectedCategory }
+        });
+        
         return (
             <div className="news-container">
                 <div className="news-header">
@@ -193,6 +204,7 @@ export default function NewsPage() {
                 <div className="error-message">
                     <h2>Error Loading News</h2>
                     <p>There was an error loading the news posts. Please try again.</p>
+                    <p className="error-details">Error: {error.message}</p>
                     <button onClick={() => refetch()} className="primary-btn">
                         Retry
                     </button>

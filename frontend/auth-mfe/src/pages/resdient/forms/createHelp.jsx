@@ -23,6 +23,18 @@ export default function CreateHelp() {
             }, 2000);
         },
         onError: (error) => {
+            console.error('CreateHelp Error:', {
+                message: error.message,
+                networkError: error.networkError,
+                graphQLErrors: error.graphQLErrors,
+                timestamp: new Date().toISOString(),
+                component: 'CreateHelp',
+                action: 'CREATE_HELP_REQUEST_MUTATION',
+                variables: {
+                    description: formData.description,
+                    location: formData.location || null
+                }
+            });
             setError(error.message);
         }
     });
