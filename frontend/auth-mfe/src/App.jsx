@@ -9,6 +9,7 @@ import HelpPage from './pages/resdient/help'
 import CreateHelp from './pages/resdient/forms/createHelp'
 import CreatePost from './pages/resdient/forms/createPost'
 import Profile from './pages/resdient/profile'
+import AccountSettings from './pages/resdient/account-settings'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/dis" element={<Discussion />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/create-help" element={<CreateHelp />} />
             <Route path="/create-post" element={<CreatePost />} />
             

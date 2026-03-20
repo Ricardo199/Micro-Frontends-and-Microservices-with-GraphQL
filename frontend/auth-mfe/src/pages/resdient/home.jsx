@@ -104,15 +104,18 @@ export default function Home() {
                         {user.role === 'business_owner' && "Engage with the community and promote your business."}
                         {user.role === 'community_organizer' && "Manage community initiatives and support your neighbors."}
                     </p>
+                    
                     <div className="user-stats">
                         <div className="stat-card">
                             <span className="stat-number">{posts.length}</span>
                             <span className="stat-label">Community Posts</span>
                         </div>
+
                         <div className="stat-card">
                             <span className="stat-number">{helpRequests.length}</span>
                             <span className="stat-label">Active Help Requests</span>
                         </div>
+                        
                         <div className="stat-card">
                             <span className="stat-number">Today</span>
                             <span className="stat-label">Last Visit</span>
@@ -129,14 +132,17 @@ export default function Home() {
                         <h3>Create Post</h3>
                         <p>Share news, start a discussion, or announce an event</p>
                     </button>
+
                     <button className="action-card" onClick={handleRequestHelp}>
                         <h3>Request Help</h3>
                         <p>Ask for assistance from your community</p>
                     </button>
+
                     <button className="action-card" onClick={handleViewCommunity}>
                         <h3>View Community</h3>
                         <p>Explore posts and discussions</p>
                     </button>
+
                     <button className="action-card" onClick={handleViewProfile}>
                         <h3>My Profile</h3>
                         <p>Manage your account and settings</p>
@@ -148,10 +154,12 @@ export default function Home() {
             <div className="recent-activity">
                 <h2>Recent Activity</h2>
                 <div className="activity-grid">
+
                     {/* Recent Posts */}
                     <div className="activity-section">
                         <h3>Latest Community Posts</h3>
                         <div className="posts-list">
+
                             {posts.map((post) => (
                                 <div key={post._id} className="post-card" onClick={() => navigate(`/post/${post._id}`)}>
                                     <div className="post-header">
@@ -174,12 +182,14 @@ export default function Home() {
                     <div className="activity-section">
                         <h3>Help Requests Needing Volunteers</h3>
                         <div className="help-list">
+
                             {helpRequests.map((help) => (
                                 <div key={help._id} className="help-card">
                                     <div className="help-header">
                                         <span className="help-author">By {help.author.username}</span>
                                         <span className="help-date">{formatDate(help.createdAt)}</span>
                                     </div>
+
                                     <h4 className="help-title">Help Needed</h4>
                                     <p className="help-description">{help.description}</p>
                                     {help.location && (
@@ -188,6 +198,7 @@ export default function Home() {
                                             <span>{help.location}</span>
                                         </div>
                                     )}
+
                                     <div className="help-actions">
                                         <button className="volunteer-btn">Volunteer</button>
                                         <span className="volunteers-count">
@@ -210,11 +221,13 @@ export default function Home() {
                         <p>Recognizing our most active community members</p>
                         <button className="highlight-btn">View Leaderboard</button>
                     </div>
+
                     <div className="highlight-card">
                         <h3>Upcoming Events</h3>
                         <p>Community gatherings and important dates</p>
                         <button className="highlight-btn">See Calendar</button>
                     </div>
+                    
                     <div className="highlight-card">
                         <h3>Success Stories</h3>
                         <p>Inspiring stories of community support</p>
