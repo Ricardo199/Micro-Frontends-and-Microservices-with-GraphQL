@@ -95,7 +95,6 @@ export default function Home() {
 
     return (
         <div className="home-container">
-            {/* Welcome Section */}
             <div className="welcome-section">
                 <div className="welcome-content">
                     <h1>Welcome back, {user.username}!</h1>
@@ -124,7 +123,6 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Quick Actions */}
             <div className="quick-actions">
                 <h2>Quick Actions</h2>
                 <div className="action-grid">
@@ -139,7 +137,7 @@ export default function Home() {
                     </button>
 
                     <button className="action-card" onClick={handleViewCommunity}>
-                        <h3>View Community</h3>
+                        <h3>View News</h3>
                         <p>Explore posts and discussions</p>
                     </button>
 
@@ -150,12 +148,10 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* Recent Activity */}
             <div className="recent-activity">
                 <h2>Recent Activity</h2>
                 <div className="activity-grid">
 
-                    {/* Recent Posts */}
                     <div className="activity-section">
                         <h3>Latest Community Posts</h3>
                         <div className="posts-list">
@@ -178,7 +174,6 @@ export default function Home() {
                         </div>
                     </div>
 
-                    {/* Help Requests */}
                     <div className="activity-section">
                         <h3>Help Requests Needing Volunteers</h3>
                         <div className="help-list">
@@ -194,7 +189,6 @@ export default function Home() {
                                     <p className="help-description">{help.description}</p>
                                     {help.location && (
                                         <div className="help-location">
-                                            <span className="location-icon">📍</span>
                                             <span>{help.location}</span>
                                         </div>
                                     )}
@@ -208,30 +202,6 @@ export default function Home() {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Community Highlights */}
-            <div className="community-highlights">
-                <h2>Community Highlights</h2>
-                <div className="highlights-grid">
-                    <div className="highlight-card">
-                        <h3>Top Contributors</h3>
-                        <p>Recognizing our most active community members</p>
-                        <button className="highlight-btn">View Leaderboard</button>
-                    </div>
-
-                    <div className="highlight-card">
-                        <h3>Upcoming Events</h3>
-                        <p>Community gatherings and important dates</p>
-                        <button className="highlight-btn">See Calendar</button>
-                    </div>
-                    
-                    <div className="highlight-card">
-                        <h3>Success Stories</h3>
-                        <p>Inspiring stories of community support</p>
-                        <button className="highlight-btn">Read Stories</button>
                     </div>
                 </div>
             </div>

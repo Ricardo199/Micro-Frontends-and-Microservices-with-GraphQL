@@ -23,6 +23,7 @@ function App() {
 
             <Route path="/home" element={<Home />} />
             <Route path="/news" element={<News />} />
+            <Route path="/news/:postId" element={<News />} />
             <Route path="/dis" element={<Discussion />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/profile" element={<Profile />} />

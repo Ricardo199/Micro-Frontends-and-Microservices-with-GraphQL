@@ -5,7 +5,6 @@ import "../../styles/home.css";
 export default function AccountSettings() {
     const navigate = useNavigate();
     
-    // Get user data from localStorage
     const [user, setUser] = useState(() => {
         const savedUser = localStorage.getItem("userInfo");
         return savedUser ? JSON.parse(savedUser) : {
@@ -16,10 +15,9 @@ export default function AccountSettings() {
         };
     });
 
-    // Form state
     const [formData, setFormData] = useState({
-        username: user?.username || '',
-        email: user?.email || '',
+        username: user?.username || 'john_doe',
+        email: user?.email || 'john@example.com',
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
@@ -67,13 +65,10 @@ export default function AccountSettings() {
             email: formData.email
         };
 
-        // Save to localStorage
         localStorage.setItem("userInfo", JSON.stringify(updatedUser));
         setUser(updatedUser);
         setMessage('Profile updated successfully!');
         setIsSaving(false);
-
-        // Clear message after 3 seconds
         setTimeout(() => setMessage(''), 3000);
     };
 
@@ -115,8 +110,6 @@ export default function AccountSettings() {
             newPassword: '',
             confirmPassword: ''
         }));
-
-        // Clear message after 3 seconds
         setTimeout(() => setMessage(''), 3000);
     };
 
