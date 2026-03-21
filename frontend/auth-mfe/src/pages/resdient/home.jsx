@@ -64,17 +64,17 @@ export default function Home() {
                 <div className="action-grid">
                     <button className="action-card" onClick={handleCreatePost}>
                         <h3>Create Post</h3>
-                        <p>Share news, start a discussion, or announce an event</p>
+                        <p>Spread the news or start new discussion</p>
                     </button>
 
                     <button className="action-card" onClick={handleRequestHelp}>
                         <h3>Request Help</h3>
-                        <p>Ask for assistance from your community</p>
+                        <p>Ask for assistance from the community</p>
                     </button>
 
                     <button className="action-card" onClick={handleViewCommunity}>
                         <h3>View News</h3>
-                        <p>Explore posts and discussions</p>
+                        <p>View all news post and discussions</p>
                     </button>
 
                     <button className="action-card" onClick={handleViewHelp}>
@@ -84,7 +84,7 @@ export default function Home() {
 
                     <button className="action-card" onClick={handleViewProfile}>
                         <h3>My Profile</h3>
-                        <p>Manage your account and settings</p>
+                        <p>View your account and settings</p>
                     </button>
                 </div>
             </div>

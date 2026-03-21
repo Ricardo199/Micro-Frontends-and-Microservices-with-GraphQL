@@ -37,7 +37,75 @@ export default function communityDetailPage() {
         navigate("/news");
     };
 
-    const post = data.post;
+    const post = data?.post;
+    
+    if (loading) {
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <button className="back-btn" onClick={handleBackToNews}>
+                        Back to News
+                    </button>
+                    <h1>News</h1>
+                </div>
+                <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <span>Loading post...</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        console.error('CommunityDetail Error:', {
+            message: error.message,
+            networkError: error.networkError,
+            graphQLErrors: error.graphQLErrors,
+            timestamp: new Date().toISOString(),
+            component: 'CommunityDetail',
+            action: 'GET_POST_QUERY',
+            variables: { _id: postId }
+        });
+        
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <button className="back-btn" onClick={handleBackToNews}>
+                        Back to News
+                    </button>
+                    <h1>News</h1>
+                </div>
+                <div className="error-message">
+                    <h2>Error Loading Post</h2>
+                    <p>There was an error loading this post. Please try again.</p>
+                    <button onClick={handleBackToNews} className="primary-btn">
+                        Back to News
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (!post) {
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <button className="back-btn" onClick={handleBackToNews}>
+                        Back to News
+                    </button>
+                    <h1>News</h1>
+                </div>
+                <div className="error-message">
+                    <h2>Post Not Found</h2>
+                    <p>The news post you are looking for does not exist.</p>
+                    <button onClick={handleBackToNews} className="primary-btn">
+                        Back to News
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="news-container">
             <div className="news-header">

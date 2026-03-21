@@ -55,7 +55,58 @@ export default function HelpDetailPage() {
         );
     }
 
-    const helpRequest = data.helpRequest;
+    const helpRequest = data?.helpRequest;
+    
+    if (error) {
+        console.error('HelpDetail Error:', {
+            message: error.message,
+            networkError: error.networkError,
+            graphQLErrors: error.graphQLErrors,
+            timestamp: new Date().toISOString(),
+            component: 'HelpDetail',
+            action: 'GET_HELP_REQUEST_QUERY',
+            variables: { _id: helpId }
+        });
+        
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <button className="back-btn" onClick={handleBackToHelp}>
+                        Back to Help Requests
+                    </button>
+                    <h1>Help Requests</h1>
+                </div>
+                <div className="error-message">
+                    <h2>Error Loading Help Request</h2>
+                    <p>There was an error loading this help request. Please try again.</p>
+                    <button onClick={handleBackToHelp} className="primary-btn">
+                        Back to Help Requests
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (!helpRequest) {
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <button className="back-btn" onClick={handleBackToHelp}>
+                        Back to Help Requests
+                    </button>
+                    <h1>Help Requests</h1>
+                </div>
+                <div className="error-message">
+                    <h2>Help Request Not Found</h2>
+                    <p>The help request you are looking for does not exist.</p>
+                    <button onClick={handleBackToHelp} className="primary-btn">
+                        Back to Help Requests
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="news-container">
             <div className="news-header">

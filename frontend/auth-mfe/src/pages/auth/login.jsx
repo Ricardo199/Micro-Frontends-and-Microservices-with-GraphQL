@@ -71,7 +71,6 @@ export default function LoginForm() {
                     <button onClick={handleSubmit}>Login</button>
                     <button onClick={handleSignUp}>Sign Up Instead</button>
                 </div>
-                    <button onClick={bypass}>bypass</button>
             </div>
         </div>
     )
