@@ -43,18 +43,7 @@ export default function Home() {
     const handleViewProfile = () => {
         navigate("/profile");
     };
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    };
-
+    
     return (
         <div className="home-container">
             <div className="welcome-section">

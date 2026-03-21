@@ -7,7 +7,7 @@ import "../../styles/login.css";
 
 export default function LoginForm() {
     const navigate = useNavigate();
-    const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
+    const [login, { loading }] = useMutation(LOGIN_MUTATION, {
         client: authApolloClient
     });
 
@@ -32,10 +32,10 @@ export default function LoginForm() {
                 variables: { email, password }
             });
 
-            // Store authentication data
             localStorage.setItem("authToken", data.login.accessToken);
             localStorage.setItem("refreshToken", data.login.refreshToken);
             localStorage.setItem("userInfo", JSON.stringify(data.login.user));
+            
             alert('Login successful!');
             navigate("/home");
         } catch (err) {
@@ -47,11 +47,6 @@ export default function LoginForm() {
     const handleSignUp = () => {
         navigate('/signup');
     };
-
-    // Remove this later
-    const bypass = () => {
-        navigate("/home");
-    }
 
     return (
         <div>

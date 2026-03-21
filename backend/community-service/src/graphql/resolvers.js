@@ -6,24 +6,51 @@ export const resolvers = {
         },
         posts: async (_, {category}, { Post }) => {
             const filter = category ? { category } : {};
-            return await Post.find(filter).populate('author', 'username');
+            const posts = await Post.find(filter);
+            return posts.map(post => ({
+                ...post.toObject(),
+                author: { _id: post.author, username: "Unknown User", email: "unknown@example.com" }
+            }));
         },
         post: async (_, { _id }, { Post }) => {
-            return await Post.findById(_id).populate('author', 'username');
+            const post = await Post.findById(_id);
+            if (!post) throw new Error("Post not found");
+            return {
+                ...post.toObject(),
+                author: { _id: post.author,
+                    username: "Unknown User",
+                    email: "unknown@example.com"
+                }
+            };
         },
         helpRequests: async (_, { isResolved }, { HelpRequest }) => {
             const filter = isResolved !== undefined ? { isResolved } : {};
-            return await HelpRequest.find(filter).populate('author', 'username').populate('volunteers', 'username');
+            const helpRequests = await HelpRequest.find(filter);
+            return helpRequests.map(helpRequest => ({
+                ...helpRequest.toObject(),
+                author: { _id: helpRequest.author, username: "Unknown User", email: "unknown@example.com" },
+                volunteers: helpRequest.volunteers.map(volunteerId => ({ _id: volunteerId, username: "Unknown Volunteer", email: "unknown@example.com" }))
+            }));
         },
         helpRequest: async (_, { _id }, { HelpRequest }) => {
-            return await HelpRequest.findById(_id).populate('author', 'username').populate('volunteers', 'username');
+            const helpRequest = await HelpRequest.findById(_id);
+            if (!helpRequest) throw new Error("Help request not found");
+            return {
+                ...helpRequest.toObject(),
+                author: { _id: helpRequest.author, username: "Unknown User", email: "unknown@example.com" },
+                volunteers: helpRequest.volunteers.map(volunteerId => ({ _id: volunteerId, username: "Unknown Volunteer", email: "unknown@example.com" }))
+            };
         },
     },
     Mutation: {
         createPost: async (_, { title, content, category }, { user, Post }) => {
             if (!user) throw new Error("Not authenticated");
+            if (!user._id || !user.username || !user.email) throw new Error("User isn't signed in");
             const post = new Post({ author: user._id, title, content, category });
-            return await post.save();
+            const savedPost = await post.save();
+            return { ...savedPost.toObject(), 
+                author: { _id: user._id, username: user.username, email: user.email }
+            };
         },
         updatePost: async (_, { _id, title, content, category }, {user, Post}) => {
             if (!user) throw new Error("Not authenticated");
@@ -46,8 +73,14 @@ export const resolvers = {
         },
         createHelpRequest: async (_, { description, location }, { user, HelpRequest }) => {
             if (!user) throw new Error("Not authenticated");
+            if (!user._id || !user.username || !user.email) throw new Error("User authentication data is incomplete");
             const helpRequest = new HelpRequest({ author: user._id, description, location });
-            return await helpRequest.save();
+            const savedHelpRequest = await helpRequest.save();
+            
+            return { ...savedHelpRequest.toObject(),
+                author: { _id: user._id, username: user.username, email: user.email },
+                volunteers: []
+            };
         },
         updateHelpRequest: async (_, { _id, description, location, isResolved }, { user, HelpRequest }) => {
             if (!user) throw new Error("Not authenticated");

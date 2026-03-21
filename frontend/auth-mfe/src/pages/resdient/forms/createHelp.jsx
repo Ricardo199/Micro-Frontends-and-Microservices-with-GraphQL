@@ -11,31 +11,12 @@ export default function CreateHelp() {
         description: '',
         location: ''
     });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-
     const [createHelpRequest, { loading }] = useMutation(CREATE_HELP_REQUEST_MUTATION, {
         client: communityApolloClient,
         onCompleted: (data) => {
-            setSuccess('Help request created successfully!');
             setTimeout(() => {
                 navigate('/news');
             }, 2000);
-        },
-        onError: (error) => {
-            console.error('CreateHelp Error:', {
-                message: error.message,
-                networkError: error.networkError,
-                graphQLErrors: error.graphQLErrors,
-                timestamp: new Date().toISOString(),
-                component: 'CreateHelp',
-                action: 'CREATE_HELP_REQUEST_MUTATION',
-                variables: {
-                    description: formData.description,
-                    location: formData.location || null
-                }
-            });
-            setError(error.message);
         }
     });
 
@@ -48,52 +29,35 @@ export default function CreateHelp() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
 
         if (!formData.description.trim()) {
-            setError('Please enter a description.');
             return;
         }
 
-        try {
-            await createHelpRequest({
-                variables: {
-                    description: formData.description,
-                    location: formData.location || null
-                }
-            });
-        } catch (err) {
-            setError(err.message);
-        }
+        await createHelpRequest({
+            variables: {
+                description: formData.description,
+                location: formData.location || null
+            }
+        });
+        
+        navigate('/help');
     };
 
     const handleBack = () => {
-        navigate('/news');
+        navigate('/home');
     };
 
     return (
         <div className="news-container">
             <div className="news-header">
                 <button className="back-btn" onClick={handleBack}>
-                    Back to News
+                    Back to Home
                 </button>
                 <h1>Create Help Request</h1>
             </div>
 
             <div className="create-post-form">
-                {error && (
-                    <div className="message error">
-                        {error}
-                    </div>
-                )}
-
-                {success && (
-                    <div className="message success">
-                        {success}
-                    </div>
-                )}
-
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="description">Description *</label>

@@ -12,33 +12,14 @@ export default function CreatePost() {
         content: '',
         category: 'news'
     });
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-
+    
     const [createPost, { loading }] = useMutation(CREATE_POST_MUTATION, {
         client: communityApolloClient,
         onCompleted: (data) => {
             console.log('CreatePost Success:', data);
-            setSuccess('Post created successfully!');
             setTimeout(() => {
                 navigate('/news');
             }, 2000);
-        },
-        onError: (error) => {
-            console.error('CreatePost Error:', {
-                message: error.message,
-                networkError: error.networkError,
-                graphQLErrors: error.graphQLErrors,
-                timestamp: new Date().toISOString(),
-                component: 'CreatePost',
-                action: 'CREATE_POST_MUTATION',
-                variables: {
-                    title: formData.title,
-                    content: formData.content,
-                    category: formData.category
-                }
-            });
-            setError(error.message);
         }
     });
 
@@ -51,53 +32,36 @@ export default function CreatePost() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
-        setSuccess('');
 
         if (!formData.title.trim() || !formData.content.trim()) {
-            setError('Please fill in all required fields.');
             return;
         }
 
-        try {
-            await createPost({
-                variables: {
-                    title: formData.title,
-                    content: formData.content,
-                    category: formData.category
-                }
-            });
-        } catch (err) {
-            setError(err.message);
-        }
+        await createPost({
+            variables: {
+                title: formData.title,
+                content: formData.content,
+                category: formData.category
+            }
+        });
+
+        navigate('/news');
     };
 
     const handleBack = () => {
-        navigate('/news');
+        navigate('/home');
     };
 
     return (
         <div className="news-container">
             <div className="news-header">
                 <button className="back-btn" onClick={handleBack}>
-                    Back to News
+                    Back to Home
                 </button>
                 <h1>Create News Post</h1>
             </div>
 
             <div className="create-post-form">
-                {error && (
-                    <div className="message error">
-                        {error}
-                    </div>
-                )}
-
-                {success && (
-                    <div className="message success">
-                        {success}
-                    </div>
-                )}
-
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="title">Title *</label>

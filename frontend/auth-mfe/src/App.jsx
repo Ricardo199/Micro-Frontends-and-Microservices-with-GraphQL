@@ -5,6 +5,8 @@ import SignUpForm from './pages/auth/signup'
 import Home from './pages/resdient/home'
 import Community from './pages/resdient/community'
 import HelpPage from './pages/resdient/help'
+import NewsDetailPage from './pages/resdient/communityDetail'
+import HelpDetailPage from './pages/resdient/helpDetail'
 import CreateHelp from './pages/resdient/forms/createHelp'
 import CreatePost from './pages/resdient/forms/createPost'
 import Profile from './pages/resdient/profile'
@@ -21,8 +23,9 @@ function App() {
 
             <Route path="/home" element={<Home />} />
             <Route path="/news" element={<Community />} />
-            <Route path="/news/:postId" element={<Community />} />
+            <Route path="/news/:postId" element={<NewsDetailPage />} />
             <Route path="/help" element={<HelpPage />} />
+            <Route path="/help/:helpId" element={<HelpDetailPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/create-help" element={<CreateHelp />} />
             <Route path="/create-post" element={<CreatePost />} />
