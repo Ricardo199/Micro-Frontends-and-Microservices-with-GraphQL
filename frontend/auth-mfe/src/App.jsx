@@ -3,13 +3,11 @@ import './App.css'
 import LoginForm from './pages/auth/login'
 import SignUpForm from './pages/auth/signup'
 import Home from './pages/resdient/home'
-import News from './pages/resdient/news'
-import Discussion from './pages/resdient/discussion'
+import Community from './pages/resdient/community'
 import HelpPage from './pages/resdient/help'
 import CreateHelp from './pages/resdient/forms/createHelp'
 import CreatePost from './pages/resdient/forms/createPost'
 import Profile from './pages/resdient/profile'
-import AccountSettings from './pages/resdient/account-settings'
 
 function App() {
   return (
@@ -22,15 +20,12 @@ function App() {
             <Route path="/signup" element={<SignUpForm />} />
 
             <Route path="/home" element={<Home />} />
-            <Route path="/news" element={<News />} />
-            <Route path="/news/:postId" element={<News />} />
-            <Route path="/dis" element={<Discussion />} />
+            <Route path="/news" element={<Community />} />
+            <Route path="/news/:postId" element={<Community />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/create-help" element={<CreateHelp />} />
             <Route path="/create-post" element={<CreatePost />} />
-            
           </Routes>
         </main>
       </div>

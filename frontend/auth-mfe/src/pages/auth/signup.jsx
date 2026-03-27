@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { SIGNUP_MUTATION } from '../../graphQL/operations';
+import { authApolloClient } from '../../services/apolloClient.js';
 import "../../styles/signup.css";
 
 export default function SignUpForm() {
     const navigate = useNavigate();
+    const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION, {
+        client: authApolloClient
+    });
     
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -27,20 +33,23 @@ export default function SignUpForm() {
             return alert("Password is required");
         }
 
-        // Sample user data for demonstration
-        const mockUser = {
-            _id: '1',
-            username: username,
-            email: email,
-            role: role
-        };
+        try {
+            const { data } = await signup({
+                variables: { username, email, password, role }
+            });
 
-        // Store authentication data
-        localStorage.setItem("token", "mock-token");
-        localStorage.setItem("refreshToken", "mock-refresh-token");
-        localStorage.setItem("userInfo", JSON.stringify(mockUser));
-        alert('Signup successful!');
-        navigate("/login");
+            // Store authentication data
+            localStorage.setItem("authToken", data.signup.accessToken);
+            localStorage.setItem("refreshToken", data.signup.refreshToken);
+            localStorage.setItem("userInfo", JSON.stringify(data.signup.user));
+            alert('Signup successful!');
+            navigate("/login");
+        } catch (err) {
+            console.error('Signup error:', err);
+            console.error('Error details:', err.message);
+            console.error('Error stack:', err.stack);
+            alert('Signup failed. Please try again. Error: ' + err.message);
+        }
     };
 
     const handleLogin = () => {
@@ -53,7 +62,7 @@ export default function SignUpForm() {
                 <h1>Sign Up</h1>
             </div>
 
-            <div login-wrapper>
+            <div className="signup-wrapper" signup-wrapper="true">
                 <div className="login-form">
                     <div className="form-group">
                         <label>Username</label>

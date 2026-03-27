@@ -1,5 +1,3 @@
-/* Home Page Styles */
-
 .home-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -8,7 +6,6 @@
     min-height: 100vh;
 }
 
-/* Loading States */
 .loading-spinner {
     display: flex;
     flex-direction: column;
@@ -24,12 +21,6 @@
     border: 4px solid #e3f2fd;
     border-top: 4px solid #2196f3;
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
 .loading-small {
@@ -41,8 +32,8 @@
 
 /* Welcome Section */
 .welcome-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #ffffff;
+    color: #333;
     border-radius: 16px;
     padding: 3rem;
     margin-bottom: 2rem;
@@ -53,6 +44,7 @@
     margin: 0 0 0.5rem 0;
     font-size: 2.5rem;
     font-weight: 700;
+    color: #333;
 }
 
 .welcome-subtitle {
@@ -76,12 +68,6 @@
     border-radius: 12px;
     text-align: center;
     border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: transform 0.3s ease, background 0.3s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.2);
 }
 
 .stat-number {
@@ -122,13 +108,11 @@
     padding: 2rem;
     text-align: left;
     cursor: pointer;
-    transition: all 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
 }
 
 .action-card:hover {
-    transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     border-color: #2196f3;
 }
@@ -190,14 +174,12 @@
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
-    transition: all 0.3s ease;
     background: #fafafa;
 }
 
 .post-card:hover {
     border-color: #2196f3;
     background: #f0f7ff;
-    transform: translateX(4px);
 }
 
 .post-header {
@@ -316,7 +298,6 @@
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    transition: background 0.3s ease;
 }
 
 .volunteer-btn:hover {
@@ -373,6 +354,10 @@
     line-height: 1.5;
 }
 
+.margin p {
+    padding: 5px;
+}
+
 .highlight-btn {
     background: #2196f3;
     color: white;
@@ -410,6 +395,7 @@
     
     .welcome-content h1 {
         font-size: 2rem;
+        color: #333;
     }
     
     .activity-grid {
@@ -553,7 +539,8 @@
     padding: 1.5rem;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(14, 14, 14, 0.1);
+    color: #333;
 }
 
 .stat-number {
@@ -1162,6 +1149,84 @@
     background: #e0e0e0;
 }
 
+/* Create Post Form Styles */
+.create-post-form {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.create-post-form h1 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #f0f0f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background-color: #fafafa;
+    box-sizing: border-box;
+    color: #333;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    background-color: white;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 1.5rem;
+}
+
+.secondary-btn {
+    background: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.secondary-btn:hover {
+    background: #e0e0e0;
+}
+
 /* Responsive Design for News */
 @media (max-width: 768px) {
     .news-controls {
@@ -1187,6 +1252,15 @@
     .news-card-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .create-post-form {
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
         gap: 0.5rem;
     }
 }

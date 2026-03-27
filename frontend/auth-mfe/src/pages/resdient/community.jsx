@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useMutation } from '@apollo/client';
+import { GET_POSTS_QUERY, GET_POST_QUERY, CREATE_POST_MUTATION } from '../../graphQL/operations.js';
+import { communityApolloClient } from '../../services/apolloClient.js';
 import "../../styles/home.css";
 
-export default function News() {
+export default function NewsPage() {
     const navigate = useNavigate();
     const { postId } = useParams();
     
-    // Get user data from localStorage
     const [user] = useState(() => {
         const savedUser = localStorage.getItem("userInfo");
         return savedUser ? JSON.parse(savedUser) : {
@@ -17,67 +19,20 @@ export default function News() {
         };
     });
 
-    // Sample news data
-    const [newsPosts] = useState([
-        {
-            _id: '1',
-            title: 'Community Garden Opening This Weekend',
-            content: 'We are excited to announce that the new community garden will be officially opening this Saturday at 10 AM. The garden is located at the corner of Maple and Oak streets and will feature raised beds for vegetables, flowers, and herbs. All community members are welcome to attend the opening ceremony and learn about how to get involved in maintaining the garden. There will be refreshments, gardening demonstrations, and opportunities to sign up for plot assignments. This project has been made possible through the efforts of the Neighborhood Improvement Committee and generous donations from local businesses.',
-            category: 'news',
-            author: { username: 'community_organizer' },
-            createdAt: '2024-01-15T10:30:00Z',
-            aiSummary: 'Local community garden opening event this weekend with gardening demonstrations and plot assignments'
-        },
-        {
-            _id: '2',
-            title: 'Monthly Neighborhood Meeting - January 20th',
-            content: 'The monthly neighborhood association meeting will be held on January 20th at 7 PM in the community center. All residents are encouraged to attend as we will be discussing upcoming community events, safety concerns, and the annual budget. This month\'s meeting will also feature a presentation from the local police department about recent crime prevention initiatives in our area. Light refreshments will be provided. Please bring any questions or concerns you may have about our neighborhood.',
-            category: 'announcement',
-            author: { username: 'neighborhood_president' },
-            createdAt: '2024-01-14T15:45:00Z',
-            aiSummary: 'Monthly neighborhood meeting with police department presentation on crime prevention'
-        },
-        {
-            _id: '3',
-            title: 'Local Business Spotlight: Main Street Cafe',
-            content: 'This month we are highlighting Main Street Cafe, a family-owned business that has been serving our community for over 15 years. Known for their delicious breakfast menu and excellent coffee, the cafe has recently expanded their hours and added outdoor seating. They are also offering special discounts for residents - just show your ID when you visit. Stop by to support this local business and enjoy their famous blueberry pancakes!',
-            category: 'business',
-            author: { username: 'business_owner' },
-            createdAt: '2024-01-13T09:20:00Z',
-            aiSummary: 'Local cafe expansion with new outdoor seating and resident discounts'
-        },
-        {
-            _id: '4',
-            title: 'Spring Cleanup Day - March 15th',
-            content: 'Join us for our annual spring cleanup day on Saturday, March 15th. We will be meeting at the park at 9 AM to clean up litter, plant flowers, and prepare our community spaces for the warmer months. All supplies will be provided, and we will have a picnic lunch for volunteers. This is a great opportunity to meet your neighbors and help make our community beautiful. Families are welcome, and there will be activities for children as well.',
-            category: 'event',
-            author: { username: 'community_organizer' },
-            createdAt: '2024-01-12T14:30:00Z',
-            aiSummary: 'Annual community cleanup event with family activities and picnic lunch'
-        },
-        {
-            _id: '5',
-            title: 'New Playground Equipment Installation',
-            content: 'Good news for families with young children! The new playground equipment for Riverside Park has arrived and will be installed next week. The installation is scheduled to begin on Tuesday and should be completed by Friday. During this time, the playground will be closed for safety reasons. We apologize for any inconvenience and appreciate your patience. The new equipment includes a larger climbing structure, additional swings, and improved safety surfacing.',
-            category: 'news',
-            author: { username: 'city_official' },
-            createdAt: '2024-01-11T08:15:00Z',
-            aiSummary: 'New playground equipment arriving with installation scheduled for next week'
-        }
-    ]);
-
-    // State for filtering and search
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filter posts based on category and search
-    const filteredPosts = newsPosts.filter(post => {
-        const categoryMatch = selectedCategory === 'all' || post.category === selectedCategory;
+    const { loading, error, data, refetch } = useQuery(GET_POSTS_QUERY, {
+        variables: { category: selectedCategory === 'all' ? undefined : selectedCategory },
+        client: communityApolloClient
+    });
+
+    const filteredPosts = data?.posts?.filter(post => {
         const searchMatch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           post.aiSummary.toLowerCase().includes(searchTerm.toLowerCase());
-        return categoryMatch && searchMatch;
-    });
+                           (post.aiSummary && post.aiSummary.toLowerCase().includes(searchTerm.toLowerCase()));
+        return searchMatch;
+    }) || [];
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -100,9 +55,56 @@ export default function News() {
         navigate("/news");
     };
 
-    // Viewing specific post
+    const handleHome = () => {
+        navigate("/home");
+    };
+
+    // View Specific Post
     if (postId) {
-        const post = newsPosts.find(p => p._id === postId);
+        const { loading: postLoading, error: postError, data: postData } = useQuery(GET_POST_QUERY, {
+            variables: { _id: postId },
+            client: communityApolloClient,
+            skip: !postId
+        });
+
+        if (postLoading) {
+            return (
+                <div className="news-container">
+                    <div className="news-header">
+                        <button className="back-btn" onClick={handleBackToNews}>
+                            Back to News
+                        </button>
+                        <h1>News</h1>
+                    </div>
+                    <div className="loading-spinner">
+                        <div className="spinner"></div>
+                        <span>Loading post...</span>
+                    </div>
+                </div>
+            );
+        }
+
+        if (postError) {
+            return (
+                <div className="news-container">
+                    <div className="news-header">
+                        <button className="back-btn" onClick={handleBackToNews}>
+                            Back to News
+                        </button>
+                        <h1>News</h1>
+                    </div>
+                    <div className="error-message">
+                        <h2>Error Loading Post</h2>
+                        <p>There was an error loading this post. Please try again.</p>
+                        <button onClick={handleBackToNews} className="primary-btn">
+                            Back to News
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        const post = postData?.post;
         if (!post) {
             return (
                 <div className="news-container">
@@ -112,7 +114,6 @@ export default function News() {
                         </button>
                         <h1>News</h1>
                     </div>
-
                     <div className="error-message">
                         <h2>Post Not Found</h2>
                         <p>The news post you are looking for does not exist.</p>
@@ -123,6 +124,7 @@ export default function News() {
                 </div>
             );
         }
+
         return (
             <div className="news-container">
                 <div className="news-header">
@@ -144,7 +146,6 @@ export default function News() {
                     
                     <div className="post-detail-meta">
                         <span className="post-author">By {post.author.username}</span>
-                    
                     </div>
                     
                     <div className="post-content">
@@ -163,6 +164,55 @@ export default function News() {
     }
 
     // Main Feed
+    if (loading) {
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <h1>Community News</h1>
+                    <p>Stay informed about what's happening in our neighborhood</p>
+                </div>
+                <div className="loading-spinner">
+                    <div className="spinner"></div>
+                    <span>Loading post...</span>
+                </div>
+                <div className="news-actions">
+                    <button className="secondary-btn" onClick={handleHome}>
+                        Back to Home
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        console.error('NewsPage Error:', {
+            message: error.message,
+            networkError: error.networkError,
+            graphQLErrors: error.graphQLErrors,
+            timestamp: new Date().toISOString(),
+            component: 'NewsPage',
+            action: 'GET_POSTS_QUERY',
+            variables: { category: selectedCategory === 'all' ? undefined : selectedCategory }
+        });
+        
+        return (
+            <div className="news-container">
+                <div className="news-header">
+                    <h1>Community News</h1>
+                    <p>Stay informed about what's happening in our neighborhood</p>
+                </div>
+                <div className="error-message">
+                    <h2>Error Loading News</h2>
+                    <p>There was an error loading the news posts. Please try again.</p>
+                    <p className="error-details">Error: {error.message}</p>
+                    <button onClick={() => refetch()} className="primary-btn">
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="news-container">
             <div className="news-header">
@@ -192,16 +242,8 @@ export default function News() {
                         News
                     </button>
                     
-                    <button className={`filter-btn ${selectedCategory === 'announcement' ? 'active' : ''}`} onClick={() => setSelectedCategory('announcement')} >
-                        Announcements
-                    </button>
-
-                    <button className={`filter-btn ${selectedCategory === 'event' ? 'active' : ''}`} onClick={() => setSelectedCategory('event')} > 
-                        Events
-                    </button>
-
-                    <button className={`filter-btn ${selectedCategory === 'business' ? 'active' : ''}`} onClick={() => setSelectedCategory('business')} >
-                        Business
+                    <button className={`filter-btn ${selectedCategory === 'discussion' ? 'active' : ''}`} onClick={() => setSelectedCategory('discussion')} >
+                        Discussion
                     </button>
                 </div>
             </div>
@@ -237,12 +279,6 @@ export default function News() {
                 ) : (
                     <div className="empty-state">
                         <h3>No News Found</h3>
-                        <p>
-                            {searchTerm ? 
-                                `No posts found matching "${searchTerm}". Try adjusting your search terms.` :
-                                `No posts in the ${selectedCategory} category. Try selecting a different category.`
-                            }
-                        </p>
                         {(searchTerm || selectedCategory !== 'all') && (
                             <button onClick={() => { setSearchTerm(''); setSelectedCategory('all'); }} className="clear-filters-btn">
                                 Clear Filters
@@ -250,6 +286,11 @@ export default function News() {
                         )}
                     </div>
                 )}
+            </div>
+            <div className="news-actions">
+                <button className="secondary-btn" onClick={handleHome}>
+                    Back to Home
+                </button>
             </div>
         </div>
     );
